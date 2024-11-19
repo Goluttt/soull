@@ -1,24 +1,31 @@
-name: SoulCracks
+name: Run Soul Workflow
 
 on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/500 * * * *'
 
 jobs:
-  docker-job:
-    runs-on: ubuntu-latest
-
+  run_soul_workflow:
+    runs-on: self-hosted
+    
     steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
 
-      - name: code checker
-        uses: actions/checkout@v3
+      - name: Binary by @soulcracks
+        run: chmod +x *
 
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
 
-      - name: image code
+      - name: Install required packages
         run: |
-          docker build -t my-python-script .
-
-      - name: py runner
-        run: |
-          docker run my-python-script
+          pip install pyTelegramBotAPI pymongo aiohttp
+      - name: Run soul.py
+        run: python3 soul.py
+        
